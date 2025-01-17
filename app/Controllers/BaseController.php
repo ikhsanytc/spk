@@ -35,7 +35,7 @@ abstract class BaseController extends Controller
      *
      * @var list<string>
      */
-    protected $helpers = ['form', 'url'];
+    protected $helpers = ['form', 'url', 'cookie'];
 
     /**
      * Be sure to declare properties for any property fetch you initialized.
@@ -54,5 +54,44 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');
+    }
+    public function encryptUserInfo(array $data)
+    {
+        $encrypter = \Config\Services::encrypter();
+        $userInfoJson = json_encode($data);
+        $userInfoEncrypted = $encrypter->encrypt($userInfoJson);
+        return $userInfoEncrypted;
+    }
+    public function decryptUserInfo(string $userInfoEncrypted)
+    {
+        $encrypter = \Config\Services::encrypter();
+        $userInfoJson = $encrypter->decrypt($userInfoEncrypted);
+        $userInfo = json_decode($userInfoJson, true);
+        return $userInfo;
+    }
+    public function get_role()
+    {
+        if (get_cookie('user')) {
+            $user = $this->decryptUserInfo(get_cookie('user'));
+            if ($user['role'] == '1') {
+                return 'admin';
+            }
+            return 'user';
+        }
+        return false;
+    }
+    public function checkUser()
+    {
+        try {
+            $userInfo = $this->decryptUserInfo(get_cookie('user'));
+            if (!isset($userInfo['id_user'], $userInfo['username'], $userInfo['role'])) {
+                set_cookie('spk_user', '', strtotime('-30 days'), '/');
+                return false;
+            }
+            return true;
+        } catch (\Exception $e) {
+            setcookie('spk_user', '', strtotime('-30 days'), '/');
+            return false;
+        }
     }
 }

@@ -73,8 +73,6 @@
         </li>
 
         <?php
-        $q = mysqli_query($koneksi, "SELECT COUNT(ada_pilihan) as banyak FROM kriteria WHERE ada_pilihan='1'");
-        $krit = mysqli_fetch_array($q);
         if ($krit['banyak'] > 0) {
         ?>
           <li class="nav-item <?php if ($page == "Sub Kriteria") {
@@ -216,7 +214,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="text-uppercase mr-2 d-none d-lg-inline text-gray-600 small">
                   <?php
-                  echo $_SESSION['username'];
+                  echo $username
                   ?>
                 </span>
                 <img class="img-profile rounded-circle" src="assets/img/user.png">
@@ -261,10 +259,11 @@
             </button>
           </div>
           <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-          <div class="modal-footer">
+          <form class="modal-footer" action="logout" method="post">
+            <input type="hidden" name="_method" value="DELETE">
             <button class="btn btn-warning" type="button" data-dismiss="modal"><i class="fas fa-fw fa-times mr-1"></i>Cancel</button>
-            <a class="btn btn-danger" href="logout.php"><i class="fas fa-fw fa-sign-out-alt mr-1"></i>Logout</a>
-          </div>
+            <button type="submit" class="btn btn-danger"><i class="fas fa-fw fa-sign-out-alt mr-1"></i>Logout</button>
+          </form>
         </div>
       </div>
     </div>

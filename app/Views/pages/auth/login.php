@@ -63,7 +63,7 @@
                                     <form class="user" action="loginAction" method="post">
                                         <?= csrf_field() ?>
                                         <div class="form-group">
-                                            <input required autocomplete="off" type="text" value="" class="form-control form-control-user" id="exampleInputUser" placeholder="Username" name="username" />
+                                            <input required autocomplete="off" type="text" value="<?= old('username') ?>" class="form-control form-control-user" id="exampleInputUser" placeholder="Username" name="username" />
                                         </div>
                                         <div class="form-group">
                                             <input required autocomplete="off" type="password" class="form-control form-control-user" id="exampleInputPassword" name="password" placeholder="Password" />

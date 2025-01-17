@@ -7,35 +7,30 @@ use App\Models\Users;
 class Home extends BaseController
 {
     protected $user;
-    protected $helpers = ['cookie', 'url', 'form'];
-
+    protected $encrypt;
     public function __construct()
     {
         $this->user = new Users();
+        $this->encrypt = \Config\Services::encrypter();
     }
-    public function index(): string
+    public function index()
     {
-        return view('welcome_message');
+        return redirect()->to(base_url('/dashboard'));
     }
-    public function login()
+    public function dashboard()
     {
-        return view('pages/auth/login');
-    }
-    public function loginAction()
-    {
-        $username = $this->request->getVar('username');
-        $password = $this->request->getVar('password');
-
-        $user = $this->user->where('username', $username)->first();
-
-        if ($user && password_verify($password, $user['password'])) {
-            setcookie('spk_user', $user['id_user'], strtotime('+30 days'), '/');
-            setcookie('spk_role', $user['role'], strtotime('+30 days'), '/');
-            setcookie('spk_nama', $user['nama'], strtotime('+30 days'), '/');
-            setcookie('spk_email', $user['email'], strtotime('+30 days'), '/');
-            return redirect()->to(base_url('/'));
-        } else {
-            return redirect()->to(base_url('/login'))->with('error', 'Username atau password salah');
+        if (!get_cookie('user') || !$this->checkUser()) {
+            return redirect()->to(base_url('/login'))->with('error', 'Anda harus login terlebih dahulu');
         }
+        $user = $this->decryptUserInfo(get_cookie('user'));
+        $data = [
+            'page' => 'Dashboard',
+            'user_role' => $this->get_role(),
+            'username' => $user['username'],
+            'krit' => [
+                'banyak' => 0,
+            ]
+        ];
+        return view('pages/dashboard', $data);
     }
 }
