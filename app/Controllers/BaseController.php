@@ -55,6 +55,9 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = service('session');
     }
+    /**
+     * Encrypt user info dari array ke json lalu di encrypt menggunakan service encrypter dari codeigniter4
+     */
     public function encryptUserInfo(array $data)
     {
         $encrypter = \Config\Services::encrypter();
@@ -62,6 +65,9 @@ abstract class BaseController extends Controller
         $userInfoEncrypted = $encrypter->encrypt($userInfoJson);
         return $userInfoEncrypted;
     }
+    /**
+     * Decrypt user info dari json yg udh di encrypt menggunakan encryptUserInfo lalu menjadi array assosiative
+     */
     public function decryptUserInfo(string $userInfoEncrypted)
     {
         $encrypter = \Config\Services::encrypter();
@@ -69,6 +75,9 @@ abstract class BaseController extends Controller
         $userInfo = json_decode($userInfoJson, true);
         return $userInfo;
     }
+    /**
+     * Mendapatkan informasi role jika user sudah login.
+     */
     public function get_role()
     {
         if (get_cookie('user')) {
@@ -80,6 +89,9 @@ abstract class BaseController extends Controller
         }
         return false;
     }
+    /**
+     * Cek apakah user sudah login atau belum.
+     */
     public function checkUser()
     {
         try {
